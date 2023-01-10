@@ -5,7 +5,10 @@ import { providers } from 'ethers';
 
 const web3Client = createClient({
   autoConnect: false,
-  provider: new providers.JsonRpcProvider(process.env.NETWORK, parseInt(String(process.env.CHAIN_ID)))
+  provider: new providers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_NETWORK, 
+    parseInt(process.env.NEXT_PUBLIC_CHAIN_ID)
+  )
 });
 
 export default function App({ Component, pageProps }: AppProps) {
