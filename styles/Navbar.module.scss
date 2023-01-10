@@ -13,13 +13,27 @@
 		li {
 			button {
 				padding: 0.5em;
-				border: 2px solid white;
 				border-radius: 10px;
 				transition: all ease-in-out .2s;
+			}
+
+			.connectBtn {
+				border: 2px solid white;
 
 				&:hover {
 					color: black;
 					background-color: white;
+				}
+			}
+
+			.disconnectBtn {
+				border: 2px solid white;
+				background-color: hsl(0, 77%, 48%);
+
+				&:hover {
+					color: hsl(0, 77%, 48%);
+					background-color: white;
+					border: 2px solid hsl(0, 77%, 48%);
 				}
 			}
 

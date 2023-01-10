@@ -10,8 +10,8 @@ function Navbar() {
 		<ul>
 			<li>
 				{address 
-					? <button onClick={_ => disconnect()}>Disconnect</button>
-					: <button onClick={_ => connect({ connector: connectors[0] })}>Connect</button>
+					? <button className={styles.disconnectBtn} onClick={_ => disconnect()}>Disconnect</button>
+					: <button className={styles.connectBtn} onClick={_ => connect({ connector: connectors[0] })}>Connect</button>
 				}
 			</li>
 		</ul>
