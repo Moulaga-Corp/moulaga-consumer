@@ -99,6 +99,13 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+#__next {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
 a {
   color: inherit;
   text-decoration: none;
