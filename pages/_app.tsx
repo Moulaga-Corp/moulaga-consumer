@@ -2,7 +2,6 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { createClient, WagmiConfig } from 'wagmi';
 import { providers } from 'ethers';
-import { useEffect, useState } from 'react';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 
 const web3Client = createClient({
@@ -15,11 +14,6 @@ const web3Client = createClient({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => setIsMounted(true), []);
-
-  if (!isMounted) return <></>;
-
   return (
     <WagmiConfig client={web3Client}>
       <Component {...pageProps} />

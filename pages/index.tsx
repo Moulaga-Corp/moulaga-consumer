@@ -7,7 +7,7 @@ export default function Home() {
   return <>
     <Navbar/>
     {address
-      ? <DataViewer wallet={address}/>
+      ? <DataViewer initialState={{type: "Initialized"}}/>
       : <></>
     }
   </>;
