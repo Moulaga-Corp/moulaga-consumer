@@ -38,7 +38,14 @@ function DataViewer<A>({ initialState }: DataViewerProps<A>) {
 		);
 		case "Loading": return <div className={styles.dataViewer}><p>Retrieving profile...</p></div>
 		case "No sbt": return <div className={styles.dataViewer}><p>Please generate an access token for this app !</p></div>
-		case "Success": return <div className={styles.dataViewer}><p>{JSON.stringify(status.data, null, 2)}</p></div>
+		case "Success": return (
+			<div className={styles.dataViewer}>
+				<p>{JSON.stringify(status.data, null, 2)}</p>
+				<button onClick={isMounted && address ? e => getProfile(e, address) : _ => {}}>
+					Fetch new data
+				</button>
+			</div>
+		);
 		case "Failure": return <div className={styles.dataViewer}><p>Error while fetching data from consumer</p></div>
 	}
 }
