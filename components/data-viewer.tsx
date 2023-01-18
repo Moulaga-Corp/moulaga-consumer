@@ -22,10 +22,24 @@ function DataViewer<A>({ initialState }: DataViewerProps<A>) {
 	async function getProfile(e: any, wallet: string) {
 		e.preventDefault();
 		setStatus({ type: "Loading" });
-		return fetch(`/api/profile?wallet=${wallet}`)
-			.then(data => data.json())
-			.then(data => setStatus({ type: "Success", data }))
-			.catch(error => setStatus({ type: "Failure", error: error }));
+
+		const data = await fetch(`/api/profile?wallet=${wallet}`)
+		if (data.status === 500) {
+			return setStatus({ type: "Failure", error: new Error((await data.json()).message) });
+		}
+
+		if (data.status === 401) {
+			return setStatus({ type: "No sbt" });
+		}
+
+		if (data.status === 200) {
+			return setStatus({ type: "Success", data: await data.json() });
+		}
+		
+		return setStatus({ 
+			type: "Failure", 
+			error: new Error("Could not fetch data: are you fetching a feeder's data ? querying a valid holder ?") 
+		});
 	}
 
 	switch(status.type) {
@@ -37,7 +51,14 @@ function DataViewer<A>({ initialState }: DataViewerProps<A>) {
 			</div>
 		);
 		case "Loading": return <div className={styles.dataViewer}><p>Retrieving profile...</p></div>
-		case "No sbt": return <div className={styles.dataViewer}><p>Please generate an access token for this app !</p></div>
+		case "No sbt": return (
+			<div className={styles.dataViewer}>
+				<p>Please register at the holder / generate an access token for this app !</p>
+				<button onClick={isMounted && address ? e => getProfile(e, address) : _ => {}}>
+					Retry anyway ?
+				</button>
+			</div>
+		);
 		case "Success": return (
 			<div className={styles.dataViewer}>
 				<p>{JSON.stringify(status.data, null, 2)}</p>
@@ -46,7 +67,14 @@ function DataViewer<A>({ initialState }: DataViewerProps<A>) {
 				</button>
 			</div>
 		);
-		case "Failure": return <div className={styles.dataViewer}><p>Error while fetching data from consumer</p></div>
+		case "Failure": return (
+			<div className={styles.dataViewer}>
+				<p>{status.error.message}</p>
+				<button onClick={isMounted && address ? e => getProfile(e, address) : _ => {}}>
+					Retry anyway ?
+				</button>
+			</div>
+		);
 	}
 }
 

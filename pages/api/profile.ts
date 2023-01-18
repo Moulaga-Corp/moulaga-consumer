@@ -19,16 +19,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 	const feeder = req.query.wallet as string;
 	const scheme = "profile";
 
-	return fetch(`${process.env.HOLDER_URL}/profile/${feeder}?publicKey=${signer.publicKey}&consumer=${consumer}&scheme=${scheme}`)
-		.then(async d => ({ code: d.status, payload: await d.json()}))
-		.then(async d => {
-			if (d.code !== 200) {
-				return res.status(400).json(d.payload);
-			}
-			const data = await moulagaSdk.decryptData(d.payload.keyData, d.payload.data);
-			return res.status(200).json(JSON.parse(data));
-		})
-		.catch(err => res.status(400).json({ message: err.message }));
+	try {
+		const result = await fetch(`${process.env.HOLDER_URL}/profile/${feeder}?publicKey=${signer.publicKey}&consumer=${consumer}&scheme=${scheme}`);
+		if (result.status !== 200) {
+			return res.status(result.status).json(await result.json());
+		}
+		
+		const payload = await result.json();
+		const protocolResult = await moulagaSdk.decryptData(payload.keyData, payload.data);
+		return res.json(JSON.parse(protocolResult));
+
+	} catch(err) {
+		return res.status(500).json({ message: "Unexpected error." });
+	}
 }
 
 export default handler;
